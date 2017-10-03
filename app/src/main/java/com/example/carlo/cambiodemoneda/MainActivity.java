@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.dp).setOnClickListener(this);
         findViewById(R.id.zero).setOnClickListener(this);
         findViewById(R.id.delete).setOnClickListener(this);
+        findViewById(R.id.button_update).setOnClickListener(this);
 
         mSpinnerFromCurrency = (Spinner) findViewById(R.id.spinnerFromCurrency);
 
@@ -100,35 +101,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 digit = "&lt";
                 break;
         }
-        if ((number == null || number.length() <= maxLength) && digit != "&lt"){
-            switch (digit){
-                case ".":
-                    if (dp_test == false){
-                        if (number == null){
-                            number = 0 + digit;
-                        }
-                        else {
-                            number = number + digit;
-                        }
-                        dp_test = true;
+
+        switch (view.getId()){
+            case R.id.button_update:
+                break;
+            default:
+                if ((number == null || number.length() <= maxLength) && digit != "&lt"){
+                    switch (digit){
+                        case ".":
+                            if (dp_test == false){
+                                if (number == null){
+                                    number = 0 + digit;
+                                }
+                                else {
+                                    number = number + digit;
+                                }
+                                dp_test = true;
+                            }
+                            break;
+                        default:
+                            if (number == null){
+                                number = digit;
+                            }
+                            else {
+                                number = number + digit;
+                            }
                     }
-                    break;
-                default:
-                    if (number == null){
-                        number = digit;
-                    }
-                    else {
-                        number = number + digit;
-                    }
-            }
-        }
-        if (digit == "&lt"){
-            if (number.length() > 0) {
-                if (number.substring(number.length() - 1).equals(".")) {
-                    dp_test = false;
                 }
-                number = number.substring(0, number.length() - 1);
-            }
+                if (digit == "&lt"){
+                    if (number.length() > 0) {
+                        if (number.substring(number.length() - 1).equals(".")) {
+                            dp_test = false;
+                        }
+                        number = number.substring(0, number.length() - 1);
+                    }
+                }
+                break;
         }
         textFromCurrency.setText(number);
 
