@@ -6,72 +6,67 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:padding="10dp"
     android:background="#1d3047"
     tools:context="com.example.carlo.cambiodemoneda.MainActivity">
 
     <LinearLayout
         android:background="#ffffff"
-        android:orientation="vertical"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="center"
-        android:layout_height="wrap_content">
+        android:weightSum="10">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            style="@style/Currency"
+            android:id="@+id/textFromCurrency"
+            android:textSize="30sp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="10"
-            android:gravity="center">
+            android:layout_weight="9"/>
 
-            <TextView
-                android:id="@+id/textFromCurrency"
-                android:textSize="30sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"/>
-
-            <Spinner
-                android:layout_width="wrap_content"
-                android:id="@+id/spinnerFromCurrency"
-                android:layout_weight="1"
-                android:layout_height="50dp"
-                tools:layout_editor_absoluteY="16dp"
-                tools:layout_editor_absoluteX="8dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="10"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/textToCurrency"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:textSize="30sp"/>
-
-            <Spinner
-                android:layout_weight="1"
-                android:id="@+id/spinnerToCurrency"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                tools:layout_editor_absoluteX="8dp"
-                tools:layout_editor_absoluteY="50dp" />
-
-        </LinearLayout>
+        <Spinner
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:id="@+id/spinnerFromCurrency"
+            android:layout_height="50dp"
+            tools:layout_editor_absoluteY="16dp"
+            tools:layout_editor_absoluteX="8dp" />
 
     </LinearLayout>
 
     <LinearLayout
+        android:background="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:weightSum="10">
+
+        <TextView
+            style="@style/Currency"
+            android:layout_weight="9"
+            android:id="@+id/textToCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="30sp"/>
+
+        <Spinner
+            android:layout_weight="1"
+            android:id="@+id/spinnerToCurrency"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:padding="25dp"
         android:orientation="vertical"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="310dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -212,6 +207,8 @@
     </LinearLayout>
 
     <LinearLayout
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:layout_width="match_parent"
         android:layout_height="75dp"
         android:orientation="vertical"

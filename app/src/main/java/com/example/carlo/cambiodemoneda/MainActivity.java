@@ -1,15 +1,19 @@
 package com.example.carlo.cambiodemoneda;
 
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.renderscript.Double2;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.NumberFormat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -23,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private double tasaDOP = 0.021024;
     private double tasaUSD = 1;
     private double tasaEUR = 1.18127;
-    private int maxLength = 10;
+    private int maxLength = 7;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ArrayAdapter<String> adapterTransformingCurrency = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currencies);
         adapterTransformingCurrency.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinnerToCurrency.setAdapter(adapterTransformingCurrency);
-
 
     }
 
@@ -99,46 +102,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.delete:
                 digit = "&lt";
+                if (number.length() > 0 || !TextUtils.isEmpty(number)) {
+                    if (number.substring(number.length() - 1).equals(".")) {
+                        dp_test = false;
+                    }
+                    number = number.substring(0, number.length() - 1);
+                }
                 break;
-        }
-
-        switch (view.getId()){
             case R.id.button_update:
-                break;
-            default:
-                if ((number == null || number.length() <= maxLength) && digit != "&lt"){
-                    switch (digit){
-                        case ".":
-                            if (dp_test == false){
-                                if (number == null){
-                                    number = 0 + digit;
-                                }
-                                else {
-                                    number = number + digit;
-                                }
-                                dp_test = true;
-                            }
-                            break;
-                        default:
-                            if (number == null){
-                                number = digit;
-                            }
-                            else {
-                                number = number + digit;
-                            }
-                    }
-                }
-                if (digit == "&lt"){
-                    if (number.length() > 0) {
-                        if (number.substring(number.length() - 1).equals(".")) {
-                            dp_test = false;
-                        }
-                        number = number.substring(0, number.length() - 1);
-                    }
-                }
+                digit = null;
                 break;
         }
-        textFromCurrency.setText(number);
+        if ((number == null || number.length() <= maxLength) && digit != "&lt" && digit != null){
+            switch (digit){
+                case ".":
+                    if (dp_test == false){
+                        if (number != null){
+                            number = number + digit;
+                        }
+                        else {
+                            number = 0 + digit;
+                        }
+                        dp_test = true;
+                    }
+                    break;
+                default:
+                    if (number == null){
+                        number = digit;
+                    }
+                    else {
+                        number = number + digit;
+                    }
+            }
+        }
+        if (mSpinnerFromCurrency.getSelectedItem().toString() == "EUR"){
+            textFromCurrency.setText("€ " + number);
+        }
+        else {
+            textFromCurrency.setText("$ " + number);
+        }
 
         //Mostrar cantidad convertida
         TextView textToCurrency = (TextView) findViewById(R.id.textToCurrency);
@@ -173,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 case "EUR":
                     switch (mSpinnerToCurrency.getSelectedItem().toString()){
                         case "DOP":
-                            Ans = Double.toString((tasaEUR/tasaDOP)*Double.parseDouble(number));
+                            Ans = Double.toString(((tasaEUR/tasaDOP)*Double.parseDouble(number)));
                             break;
                         case "USD":
                             Ans = Double.toString((tasaEUR/tasaUSD)*Double.parseDouble(number));
@@ -185,11 +187,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
             }
         }
-        if (Ans.length() > maxLength){
-            textToCurrency.setText(Ans.substring(0,maxLength));
+        else {
+            if (TextUtils.isEmpty(number)){
+                Ans = "0";
+            }
+        }
+        if (Ans.length() > maxLength + 4){
+            if (mSpinnerToCurrency.getSelectedItem().toString() == "EUR"){
+                textToCurrency.setText("€ " + Ans.substring(0,maxLength + 5));
+            }
+            else{
+                textToCurrency.setText("$ " + Ans.substring(0,maxLength + 5));
+            }
         }
         else {
-            textToCurrency.setText(Ans);
+            if (mSpinnerToCurrency.getSelectedItem().toString() == "EUR"){
+                textToCurrency.setText("€ " + Ans);
+            }
+            else{
+                textToCurrency.setText("$ " + Ans);
+            }
         }
+        digit = null;
     }
 }
