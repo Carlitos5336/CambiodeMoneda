@@ -13,6 +13,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.text.NumberFormat;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -24,10 +26,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private String digit;
     private boolean dp_test = false;
     private String Ans;
+    private double AnsDouble;
     private double tasaDOP = 0.021024;
     private double tasaUSD = 1;
     private double tasaEUR = 1.18127;
     private int maxLength = 7;
+
+    DecimalFormat dm = new DecimalFormat("#,###,###,##0.00");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,27 +106,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 digit = "0";
                 break;
             case R.id.delete:
-                digit = "&lt";
-                if (number.length() > 0 || !TextUtils.isEmpty(number)) {
+                digit = "delete";
+                if (!TextUtils.isEmpty(number)) {
                     if (number.substring(number.length() - 1).equals(".")) {
                         dp_test = false;
                     }
                     number = number.substring(0, number.length() - 1);
                 }
+                digit = null;
                 break;
             case R.id.button_update:
                 digit = null;
                 break;
         }
-        if ((number == null || number.length() <= maxLength) && digit != "&lt" && digit != null){
+        if ((TextUtils.isEmpty(number) || number.length() <= maxLength) && digit != "delete" && digit != null){
             switch (digit){
                 case ".":
                     if (dp_test == false){
-                        if (number != null){
+                        if (!TextUtils.isEmpty(number)){
                             number = number + digit;
                         }
                         else {
-                            number = 0 + digit;
+                            number = "0" + digit;
                         }
                         dp_test = true;
                     }
@@ -135,53 +141,58 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
             }
         }
-        if (mSpinnerFromCurrency.getSelectedItem().toString() == "EUR"){
-            textFromCurrency.setText("€ " + number);
+        if (!TextUtils.isEmpty(number)){
+            if (mSpinnerFromCurrency.getSelectedItem().toString() == "EUR"){
+                textFromCurrency.setText("€ " + number);
+            }
+            else {
+                textFromCurrency.setText("$ " + number);
+            }
         }
         else {
-            textFromCurrency.setText("$ " + number);
+            textFromCurrency.setText("");
         }
 
         //Mostrar cantidad convertida
         TextView textToCurrency = (TextView) findViewById(R.id.textToCurrency);
-        if (number.length() > 0){
+        if (!TextUtils.isEmpty(number)){
             switch (mSpinnerFromCurrency.getSelectedItem().toString()){
                 case "DOP":
                     switch (mSpinnerToCurrency.getSelectedItem().toString()){
                         case "DOP":
-                            Ans = Double.toString((tasaDOP/tasaDOP)*Double.parseDouble(number));
+                            AnsDouble = (tasaDOP/tasaDOP)*Double.parseDouble(number);
                             break;
                         case "USD":
-                            Ans = Double.toString((tasaDOP/tasaUSD)*Double.parseDouble(number));
+                            AnsDouble = (tasaDOP/tasaUSD)*Double.parseDouble(number);
                             break;
                         case "EUR":
-                            Ans = Double.toString((tasaDOP/tasaEUR)*Double.parseDouble(number));
+                            AnsDouble = (tasaDOP/tasaEUR)*Double.parseDouble(number);
                             break;
                     }
                     break;
                 case "USD":
                     switch (mSpinnerToCurrency.getSelectedItem().toString()){
                         case "DOP":
-                            Ans = Double.toString((tasaUSD/tasaDOP)*Double.parseDouble(number));
+                            AnsDouble = (tasaUSD/tasaDOP)*Double.parseDouble(number);
                             break;
                         case "USD":
-                            Ans = Double.toString((tasaUSD/tasaUSD)*Double.parseDouble(number));
+                            AnsDouble = (tasaUSD/tasaUSD)*Double.parseDouble(number);
                             break;
                         case "EUR":
-                            Ans = Double.toString((tasaUSD/tasaEUR)*Double.parseDouble(number));
+                            AnsDouble = (tasaUSD/tasaEUR)*Double.parseDouble(number);
                             break;
                     }
                     break;
                 case "EUR":
                     switch (mSpinnerToCurrency.getSelectedItem().toString()){
                         case "DOP":
-                            Ans = Double.toString(((tasaEUR/tasaDOP)*Double.parseDouble(number)));
+                            AnsDouble = (tasaEUR/tasaDOP)*Double.parseDouble(number);
                             break;
                         case "USD":
-                            Ans = Double.toString((tasaEUR/tasaUSD)*Double.parseDouble(number));
+                            AnsDouble = (tasaEUR/tasaUSD)*Double.parseDouble(number);
                             break;
                         case "EUR":
-                            Ans = Double.toString((tasaEUR/tasaEUR)*Double.parseDouble(number));
+                            AnsDouble = (tasaEUR/tasaEUR)*Double.parseDouble(number);
                             break;
                     }
                     break;
@@ -189,15 +200,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else {
             if (TextUtils.isEmpty(number)){
-                Ans = "0";
+                AnsDouble = 0;
             }
         }
-        if (Ans.length() > maxLength + 4){
+        Ans = dm.format(AnsDouble);
+        if (Ans.length() > maxLength + 5){
             if (mSpinnerToCurrency.getSelectedItem().toString() == "EUR"){
-                textToCurrency.setText("€ " + Ans.substring(0,maxLength + 5));
+                textToCurrency.setText("€ " + Ans.substring(0,maxLength + 6));
             }
             else{
-                textToCurrency.setText("$ " + Ans.substring(0,maxLength + 5));
+                textToCurrency.setText("$ " + Ans.substring(0,maxLength + 6));
             }
         }
         else {
@@ -208,6 +220,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textToCurrency.setText("$ " + Ans);
             }
         }
-        digit = null;
     }
 }
